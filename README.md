@@ -1,4 +1,4 @@
-# 🌀 Flood Fill Algorithm Visualizer
+# Flood Fill Algorithm Visualizer
 
 A Python-based desktop visualizer for the **Flood Fill (BFS)** pathfinding algorithm using **Tkinter**. Build mazes, place start/end points, and watch the algorithm in action with adjustable speed and a user-friendly GUI.
 
@@ -10,7 +10,7 @@ A Python-based desktop visualizer for the **Flood Fill (BFS)** pathfinding algor
 - Reset search or clear the grid easily
 - Fully interactive UI using `tkinter`
 
-## 🧠 How It Works
+## How It Works
 
 This project implements **Breadth-First Search (BFS)** to find the shortest path from a start to an end cell on a 2D grid with walls as obstacles. It shows:
 - Visited nodes (`lightblue`)
