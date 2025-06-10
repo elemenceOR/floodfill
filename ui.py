@@ -107,9 +107,9 @@ class FloodFillUI:
         """Update the algorithm information label"""
         algorithm = self.algorithm_var.get()
         if algorithm == "bfs":
-            self.info_label.config(text="BFS: Shortest path guaranteed", fg="blue")
+            self.info_label.config(text="BFS: Breath First Search", fg="blue")
         else:
-            self.info_label.config(text="DFS: Explores depth first", fg="darkgreen")
+            self.info_label.config(text="DFS: Deapth First Search", fg="darkgreen")
 
     def draw_grid(self):
         self.canvas.delete("all")
