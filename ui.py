@@ -50,10 +50,17 @@ class FloodFillUI:
                                 command=lambda: self.set_mode("end"))
         self.end_btn.grid(row=0, column=3, padx=2)
 
+        # Algorithm selection
+        tk.Label(control_frame, text="Algorithm:", font=("Arial", 12, "bold")).grid(row=0, column=4, padx=(20,5))
+        self.algorithm_var = tk.StringVar(value="bfs")
+        algorithm_menu = tk.OptionMenu(control_frame, self.algorithm_var, "bfs", "dfs")
+        algorithm_menu.config(width=8, bg="lightsteelblue")
+        algorithm_menu.grid(row=0, column=5, padx=2)
+
         # Action buttons
         tk.Label(control_frame, text="Actions:", font=("Arial", 12, "bold")).grid(row=1, column=0, padx=5, pady=(10,0))
 
-        self.run_btn = tk.Button(control_frame, text="Run Flood Fill", bg="lightblue",
+        self.run_btn = tk.Button(control_frame, text="Run Algorithm", bg="lightblue",
                                 command=self.run_flood_fill)
         self.run_btn.grid(row=1, column=1, padx=2, pady=(10,0))
 
@@ -72,9 +79,15 @@ class FloodFillUI:
                                 variable=self.speed_var, length=200)
         speed_scale.grid(row=2, column=1, columnspan=3, pady=(10,0))
 
+        # Algorithm info label
+        self.info_label = tk.Label(control_frame, text="BFS: Shortest path guaranteed", font=("Arial", 9), fg="blue")
+        self.info_label.grid(row=2, column=4, columnspan=2, pady=(10,0))
+        
+        # Update info when algorithm changes
+        self.algorithm_var.trace('w', self.update_algorithm_info)
+
         # Canvas
-        self.canvas = tk.Canvas(self.root, width=self.width * self.cell_size,
-                               height=self.height * self.cell_size, bg="white")
+        self.canvas = tk.Canvas(self.root, width=self.width * self.cell_size, height=self.height * self.cell_size, bg="white")
         self.canvas.pack(pady=10)
 
         # Draw grid
@@ -86,9 +99,17 @@ class FloodFillUI:
 
         # Instructions
         instructions = tk.Label(self.root,
-                                text="Instructions: Select mode, click to place walls/start/end, then run flood fill!",
+                                text="Instructions: Select mode, click to place walls/start/end, choose algorithm, then run!",
                                 font=("Arial", 10), fg="gray")
         instructions.pack(pady=5)
+
+    def update_algorithm_info(self, *args):
+        """Update the algorithm information label"""
+        algorithm = self.algorithm_var.get()
+        if algorithm == "bfs":
+            self.info_label.config(text="BFS: Shortest path guaranteed", fg="blue")
+        else:
+            self.info_label.config(text="DFS: Explores depth first", fg="darkgreen")
 
     def draw_grid(self):
         self.canvas.delete("all")
@@ -193,20 +214,25 @@ class FloodFillUI:
         # Reset previous search
         self.reset_search()
 
+        # Get selected algorithm
+        selected_algorithm = self.algorithm_var.get()
+
         # Run flood fill algorithm
         algo = FloodFillAlgorithm(
             self.grid,
             self.start,
             self.end,
+            selected_algorithm,
             speed_callback=self.get_speed,
             update_callback=lambda: [self.draw_grid(), self.root.update()]
         )
-        path_found = algo.bfs()
+        path_found = algo.search()
 
+        algorithm_name = "BFS" if selected_algorithm == "bfs" else "DFS"
         if path_found:
-            messagebox.showinfo("Success", "Path found!")
+            messagebox.showinfo("Success", f"Path found using {algorithm_name}!")
         else:
-            messagebox.showinfo("No Path", "No path exists between start and end!")
+            messagebox.showinfo("No Path", f"No path exists between start and end using {algorithm_name}!")
 
         self.running = False
         self.run_btn.config(state="normal")
