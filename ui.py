@@ -53,7 +53,7 @@ class FloodFillUI:
         # Algorithm selection
         tk.Label(control_frame, text="Algorithm:", font=("Arial", 12, "bold")).grid(row=0, column=4, padx=(20,5))
         self.algorithm_var = tk.StringVar(value="bfs")
-        algorithm_menu = tk.OptionMenu(control_frame, self.algorithm_var, "bfs", "dfs")
+        algorithm_menu = tk.OptionMenu(control_frame, self.algorithm_var, "bfs", "dfs", "astar")
         algorithm_menu.config(width=8, bg="lightsteelblue")
         algorithm_menu.grid(row=0, column=5, padx=2)
 
@@ -108,8 +108,10 @@ class FloodFillUI:
         algorithm = self.algorithm_var.get()
         if algorithm == "bfs":
             self.info_label.config(text="BFS: Breath First Search", fg="blue")
-        else:
+        elif algorithm == "dfs":
             self.info_label.config(text="DFS: Deapth First Search", fg="darkgreen")
+        else:
+            self.info_label.config(text="A*: Optimal path with heuristic", fg="purple")
 
     def draw_grid(self):
         self.canvas.delete("all")
@@ -228,7 +230,9 @@ class FloodFillUI:
         )
         path_found = algo.search()
 
-        algorithm_name = "BFS" if selected_algorithm == "bfs" else "DFS"
+        algorithm_names = {"bfs": "BFS", "dfs": "DFS", "astar": "A*"}
+        algorithm_name = algorithm_names.get(selected_algorithm, selected_algorithm.upper())
+        
         if path_found:
             messagebox.showinfo("Success", f"Path found using {algorithm_name}!")
         else:
